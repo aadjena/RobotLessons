@@ -22,8 +22,18 @@ public class Extender implements Mechanism {
   private final SparkMax motor;
   public Extender() {
     this.motor = Mechanical.createSparkMax(Schematic.EXTENDER_SPARK_MAX, MotorType.kBrushless);
+    setDefaultCommand(hold());
   }
-
+public Command hold() {
+    return run(coroutine -> {
+      while (true) {
+        // Add code here to move the extender out.
+        motor.setVoltage(0);
+        coroutine.yield();
+         
+      }
+    }).named("Extender Out");
+  }
   public Command out() {
     return run(coroutine -> {
       while (true) {
