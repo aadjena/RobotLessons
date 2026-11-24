@@ -39,7 +39,7 @@ public Command hold() {
   }
   public Command out() {
     return run(coroutine -> {
-      while (encoder.getPosition().get() < 1.1) {
+      while (encoder.getPosition().get() < 1.01) {
         // Add code here to move the extender out.
         motor.setVoltage(FULL_EXTEND);
         coroutine.yield();
@@ -50,7 +50,7 @@ public Command hold() {
 
   public Command in() {
     return run(coroutine -> {
-      while (encoder.getPosition().get() > 0.0) {
+      while (encoder.getPosition().get() > 0.01) {
         // Add code here to move the extender in.
         motor.setVoltage(FULL_RETRACT);
         coroutine.yield();
