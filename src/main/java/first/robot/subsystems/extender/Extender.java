@@ -5,6 +5,7 @@ import org.wpilib.command3.Mechanism;
 import org.wpilib.epilogue.Logged;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import first.robot.Schematic;
@@ -15,6 +16,7 @@ import first.robot.mechanical.Mechanical;
 /** The extender slides the claw in and out on a pulley (the x-axis). */
 @Logged
 public class Extender implements Mechanism {
+private final RelativeEncoder encoder;
 
   public static final double FULL_EXTEND = +12.0;
   public static final double FULL_RETRACT = -12.0;
@@ -22,6 +24,7 @@ public class Extender implements Mechanism {
   private final SparkMax motor;
   public Extender() {
     this.motor = Mechanical.createSparkMax(Schematic.EXTENDER_SPARK_MAX, MotorType.kBrushless);
+    this.encoder = motor.getEncoder();
     setDefaultCommand(hold());
   }
 public Command hold() {
@@ -36,7 +39,7 @@ public Command hold() {
   }
   public Command out() {
     return run(coroutine -> {
-      while (true) {
+      while (encoder.getPosition().get() < 1.1) {
         // Add code here to move the extender out.
         motor.setVoltage(FULL_EXTEND);
         coroutine.yield();
@@ -47,7 +50,7 @@ public Command hold() {
 
   public Command in() {
     return run(coroutine -> {
-      while (true) {
+      while (encoder.getPosition().get() > 0.0) {
         // Add code here to move the extender in.
         motor.setVoltage(FULL_RETRACT);
         coroutine.yield();
